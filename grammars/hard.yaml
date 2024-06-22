@@ -1,0 +1,10 @@
+start-symbol: S
+terminals: [a, b, c, $]
+non-terminals: [S, A, B, C]
+productions:
+  S: [Aa]
+  A: [Bb, Cc, $]
+  B: [Ab, $]
+  C: [Aa, $]
+
+# $ means epsilon
