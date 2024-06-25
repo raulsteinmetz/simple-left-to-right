@@ -1,67 +1,110 @@
 import os
 import argparse
-import yaml
-import json
+import ply.lex as lex
 
-def parse_yaml(fpath: str):
-    with open(fpath, 'r') as file:
-        data = yaml.safe_load(file)
-    return {
-        "initial_symbol": data.get("start-symbol"),
-        "terminals": data.get("terminals"),
-        "non_terminals": data.get("non-terminals"),
-        "productions": data.get("productions")
+
+from tools import parse_yaml, grammar_to_string
+from slr.table import get_firsts # TODO
+from slr.lexer import build_lexer # TODO 
+
+STACK = 's'
+REDUCE = 'r'
+NOP = 'n'
+ACCEPT = 'ac'
+
+def recognize(grammar, word):
+    word = ['id', '+', '(', 'id', ')', '$']
+    rules = {
+        1: ['E', ['E', '+', 'T']],
+        2: ['E', ['T']],
+        3: ['T', ['T', '*', 'F']],
+        4: ['T', ['F']],
+        5: ['F', ['(', 'E', ')']],
+        6: ['F', ['id']]
     }
 
-def grammar_to_string(grammar: dict):
-    return json.dumps(grammar, separators=(',', ': '))
+    slr_table = {
+        0: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': [NOP, 1], 'T': [NOP, 2], 'F': [NOP, 3]},
+        1: {'id': '', '+': [STACK, 6], '*': '', '(': '', ')': '', '$': [ACCEPT], 'E': '', 'T': '', 'F': ''},
+        2: {'id': '', '+': [REDUCE, 2], '*': [STACK, 7], '(': '', ')': [REDUCE, 2], '$': [REDUCE, 2], 'E': '', 'T': '', 'F': ''},
+        3: {'id': '', '+': [REDUCE, 4], '*': [REDUCE, 4], '(': '', ')': [REDUCE, 4], '$': [REDUCE, 4], 'E': '', 'T': '', 'F': ''},
+        4: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': [NOP, 8], 'T': [NOP, 2], 'F': [NOP, 3]},
+        5: {'id': '', '+': [REDUCE, 6], '*': [REDUCE, 6], '(': '', ')': [REDUCE, 6], '$': [REDUCE, 6], 'E': '', 'T': '', 'F': ''},
+        6: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': '', 'T': [NOP, 9], 'F': [NOP, 3]},
+        7: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': '', 'T': '', 'F': [NOP, 10]},
+        8: {'id': '', '+': [STACK, 6], '*': '', '(': '', ')': [STACK, 11], '$': '', 'E': '', 'T': '', 'F': ''},
+        9: {'id': '', '+': [REDUCE, 1], '*': [STACK, 7], '(': '', ')': [REDUCE, 1], '$': [REDUCE, 1], 'E': '', 'T': '', 'F': ''},
+        10: {'id': '', '+': [REDUCE, 3], '*': [REDUCE, 3], '(': '', ')': [REDUCE, 3], '$': [REDUCE, 3], 'E': '', 'T': '', 'F': ''},
+        11: {'id': '', '+': [REDUCE, 5], '*': [REDUCE, 5], '(': '', ')': [REDUCE, 5], '$': [REDUCE, 5], 'E': '', 'T': '', 'F': ''}
+    }
 
-def get_firsts(grammar: dict):
-    firsts = {nt: set() for nt in grammar['non_terminals']}
-    productions = grammar['productions']
+    stack = [0]
 
-    for terminal in grammar['terminals']:
-        firsts[terminal] = {terminal}
+    accepted = False
+    while not accepted:
+        print('stack: ', stack)
+        print('word: ', word, end='\n\n')
 
-    changed = True
-    while changed:
-        changed = False
-        for nt in grammar['non_terminals']:
-            for production in productions.get(nt, []):
-                for symbol in production:
-                    if symbol in grammar['terminals']:
-                        if symbol not in firsts[nt]:
-                            firsts[nt].add(symbol)
-                            changed = True
-                        break
-                    elif symbol in grammar['non_terminals']:
-                        before_update = len(firsts[nt])
-                        firsts[nt].update(firsts[symbol] - {'$'})
-                        if '$' in firsts[symbol]:
-                            continue
-                        if len(firsts[nt]) != before_update:
-                            changed = True
-                        break
-                    if symbol == '$':
-                        if '$' not in firsts[nt]:
-                            firsts[nt].add('$')
-                            changed = True
-                        break
+        try:
+            op = slr_table[int(stack[-1])][word[0]]
+            if op == '':
+                return False
+        except: # nop
+            stack.append(str(slr_table[int(stack[-2])][stack[-1]][1]))
+            continue
 
-    return {nt: list(firsts[nt]) for nt in firsts if nt in grammar['non_terminals']}
+        if op[0] == STACK:
+            stack.append(word[0])
+            stack.append(str(op[1]))
+            word = word[1:]
+        
+        elif op[0] == REDUCE:
+            left, right = rules[op[1]]
+            rstack = list(reversed(stack))
+            right = list(reversed(right))
+            itr = 0
+            cut = 0
+            for i in range(len(right)):
+                print('itr: ', itr)
+                print('rstack: ', rstack)
+                print('i: ', i)
+                print('right: ', right)
+                if str(rstack[itr]).isnumeric():
+                    itr += 1
+                    cut -= 1
+                if rstack[itr] == right[i]:
+                    itr += 1
+                    cut -= 1
+                else:
+                    return False
+            
+            stack = stack[:cut]
+            stack.append(left)
+
+
+        elif op[0] == ACCEPT:
+            accepted = True
+
+    return True
+
 
 def main(grammar_path: str, words_path: str):
     grammar = parse_yaml(grammar_path)
     grammar_str = grammar_to_string(grammar)
-    firsts = get_firsts(grammar)
 
-    print(grammar_str)
-    print(firsts)
+
+    accpt = recognize(grammar, '')
+
+    print(accpt)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recognize a grammar and test words on it')
-    parser.add_argument('--grammar_path', type=str, default='./grammars/right-linear.yaml', help='Path to your grammar definition')
-    parser.add_argument('--words_path', type=str, default='TODO', help='Path to the words to be tested on your grammar')
+    parser.add_argument('--grammar', type=str, default='./grammars/grammar_ops.yaml', help='Path to your grammar definition')
+    parser.add_argument('--words', type=str, default='TODO', help='Path to the words to be tested on your grammar')
     args = parser.parse_args()
     
-    main(args.grammar_path, args.words_path)
+    main(args.grammar, args.words)
+
+
+
+# id + id * id
