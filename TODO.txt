@@ -1,0 +1,6 @@
+1. tokenizador automatico
+2. tokenizador de regras da gramatica
+3. construção da tabela slr
+4. nossa gramatica
+
+5. limpar e refatorar codigo (opcional)
