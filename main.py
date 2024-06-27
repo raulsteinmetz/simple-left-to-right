@@ -3,7 +3,7 @@ import argparse
 
 from tools.grammar import parse_yaml
 from tools.lexer import tokenize
-from slr.recognize import run_slr
+from tools.slr import run_slr
 
 
 def main(grammar_path: str, words_path: str):
