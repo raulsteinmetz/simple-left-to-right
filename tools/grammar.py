@@ -12,5 +12,7 @@ def parse_yaml(fpath: str):
         "productions": data.get("productions")
     }
 
+
+
 def grammar_to_string(grammar: dict):
     return json.dumps(grammar, separators=(',', ': '))

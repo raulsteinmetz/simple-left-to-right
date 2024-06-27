@@ -2,9 +2,9 @@ start-symbol: E
 terminals: [id, +, '*', (, ), $]
 non-terminals: [E, T, F]
 productions:
-  E: [E+T, T]
-  T: [T*F, F]
-  F: [(E), id]
+  E: [['E', '+', 'T'], ['T']]
+  T: [['T', '*', 'F'], ['F']]
+  F: [['(', 'E', ')'], ['id']]
 
 
 # $ means epsilon
