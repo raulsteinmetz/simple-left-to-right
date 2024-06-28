@@ -2,3 +2,17 @@
 4. nossa gramatica
 
 5. limpar e refatorar codigo (opcional)
+
+
+GRAMÁTICA:
+
+Por qual motivo nós teríamos uma gramática assim? Se o cara tem que digitar ela no formato específico
+do nosso .yaml logo não precisamos ter uma gramática que reconhece outra e sim só verificar se é GLD
+
+caps = [A...Z]
+txt = [a...z, 0...9, etc]
+
+S -> caps A          --> Reconhece um simbolo não terminal
+A -> txt A | B       --> Reconhece cadeia de terminais de uma produção
+B -> caps A | C      --> Reconhece outra produção ou termina uma produção         
+C -> S | null        --> Reconhece um novo não terminal ou acaba o gramática
