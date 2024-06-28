@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from tools.grammar import parse_yaml
+from tools.grammar import parse_yaml, grammar_to_string
 from tools.lexer import tokenize
 from tools.slr import run_slr
 

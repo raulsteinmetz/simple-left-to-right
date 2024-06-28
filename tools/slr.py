@@ -34,7 +34,6 @@ def run_slr(grammar, tokens):
 
     accepted = False
     while not accepted:
-
         try:
             op = slr_table[int(stack[-1])][tokens[0]]
             if op == '':

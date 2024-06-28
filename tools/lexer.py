@@ -11,7 +11,6 @@ def tokenize(grammar: dict, word: str):
 
         matching_terminals = [i for i in grammar['terminals'] if i.startswith(token)]
 
-
         if matching_terminals:
             if token in matching_terminals:
                 longest_match = token
@@ -32,5 +31,4 @@ def tokenize(grammar: dict, word: str):
     if longest_match:
         tokens.append(longest_match)
 
-    print(tokens)
     return True, tokens, ''

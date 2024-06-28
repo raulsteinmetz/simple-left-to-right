@@ -13,6 +13,5 @@ def parse_yaml(fpath: str):
     }
 
 
-
 def grammar_to_string(grammar: dict):
     return json.dumps(grammar, separators=(',', ': '))
