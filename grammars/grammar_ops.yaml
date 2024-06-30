@@ -1,5 +1,5 @@
 start-symbol: E
-terminals: [id, +, '*', (, ), $]
+terminals: [id, +, '*', (, ), '&']
 non-terminals: [E, T, F]
 productions:
   E: [['E', '+', 'T'], ['T']]
@@ -7,4 +7,4 @@ productions:
   F: [['(', 'E', ')'], ['id']]
 
 
-# $ means epsilon
+# & means epsilon
