@@ -88,6 +88,26 @@ def _get_follows(grammar: dict):
     
 
 
+class SlrNode:
+    def __init__(self):
+        self.prods = []
+        self.cons = []
+
+    def add_prod(self, prod: tuple):
+        self.prods.append(prod)
+    
+    def add_con(self, symbol: str, node: 'SlrNode'):
+        self.cons.append((symbol, node))
+
+class SlrGraph:
+    def __init__(self):
+        self.nodes = []
+
+    def add_node(self, node: 'SlrNode'):
+        self.nodes.append(node)
+
+
+
 def gen_table(grammar: dict):
     
     firsts = _get_firsts(grammar)
@@ -98,7 +118,7 @@ def gen_table(grammar: dict):
     print(f'Follows -> {follows}', end='\n'*2)
 
 
-    rules = {'0': [grammar['initial_symbol'] + "'", [grammar['initial_symbol']]]}
+    rules = {0: [grammar['initial_symbol'] + "'", [grammar['initial_symbol']]]}
 
     itr = 1
     for symbol in grammar['productions']:
@@ -108,4 +128,19 @@ def gen_table(grammar: dict):
 
 
     print(f'Rules -> {rules}', end='\n'*3)
+
+    slr_graph = SlrGraph()
+
+    # initial node
+    i0 = SlrNode()
+    init_prod_l = rules[0][0]
+    init_prod_r = ['.'] + rules[0][1]
+    init_prod = (init_prod_l, init_prod_r)
+    i0.add_prod(init_prod)
+    slr_graph.add_node(i0)
+
+
+    finished = False
+    while not finished:
+        pass
 
