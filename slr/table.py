@@ -172,7 +172,6 @@ def gen_table(grammar: dict):
         # TODO: if connection with a symble already exists on our, use same node for connection
         # TODO: if exact prod exists in another node, connect to that one
         for prod in current_node.prods:
-            con_symbol = ''
             new_prod_r = prod[1]
             for i in range(len(new_prod_r)):
                 if i == len(new_prod_r):
@@ -182,15 +181,16 @@ def gen_table(grammar: dict):
                     new_prod_r[i+1] = '.'
                     con_symbol = new_prod_r[i]
                     break
-            
-            new_node = SlrNode()
+
+        
             new_prod = (prod[0], new_prod_r)
+            new_node = SlrNode()
             new_node.add_prod(new_prod)
             current_node.add_con(con_symbol, new_node) 
-            slr_graph.add_node(new_node)               
+            slr_graph.add_node(new_node)
+
 
 
         finished = True
-                    
 
     slr_graph.nice_print()
