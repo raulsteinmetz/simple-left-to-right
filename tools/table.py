@@ -1,4 +1,4 @@
-def get_firsts(grammar: dict):
+def _get_firsts(grammar: dict):
     '''
         if x is terminal, First(x) = {x},
         if X -> eps, eps in First(X),
@@ -52,14 +52,14 @@ def get_firsts(grammar: dict):
 
     return firsts
 
-def get_follows(grammar: dict):
+def _get_follows(grammar: dict):
     '''
         $ in follow(S) if S is the initial symbol,
         if A -> [..]XB, First(B) in Follow(X) - b being terminal or not,
         if A -> [...]X or A -> [...]XB and B -> eps, Follow(A) in Follow(X) 
     '''
 
-    firsts = get_firsts(grammar)
+    firsts = _get_firsts(grammar)
     follows = {non_term: [] for non_term in grammar['non_terminals']}
     follows[grammar['initial_symbol']].append('$')
 
@@ -89,4 +89,23 @@ def get_follows(grammar: dict):
 
 
 def gen_table(grammar: dict):
-    pass
+    
+    firsts = _get_firsts(grammar)
+    follows = _get_follows(grammar)
+
+
+    print(f'Firsts -> {firsts}', end='\n'*2)
+    print(f'Follows -> {follows}', end='\n'*2)
+
+
+    rules = {'0': [grammar['initial_symbol'] + "'", [grammar['initial_symbol']]]}
+
+    itr = 1
+    for symbol in grammar['productions']:
+        for production in grammar['productions'][symbol]:
+            rules[itr] = [symbol, production]
+            itr += 1
+
+
+    print(f'Rules -> {rules}', end='\n'*3)
+
