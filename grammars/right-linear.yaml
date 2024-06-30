@@ -2,11 +2,9 @@ start-symbol: S
 terminals: [a, b, c, '&']
 non-terminals: [S, A, B, C, X]
 productions:
-  S: [aA, bB, cC]
-  A: [X, '&']
-  X: [aA, bB, cC]
-  B: [aA, bB, '&']
-  C: [abB, baA]
+  S: [[a, A], [b, B], [c, C]]
+  A: [[X], ['&']]
+  X: [[a, A], [b, B], [c, C]]
+  B: [[a, A], [b, B], ['&']]
+  C: [[a, b, B], [b, a, A]]
 
-
-# '&' means epsilon

@@ -131,6 +131,15 @@ def gen_table(grammar: dict):
 
     slr_graph = SlrGraph()
 
+
+    def append_prods(node: SlrNode, non_term: str):
+        # adds productions of a non terminal to a node in the graph
+        for rule in rules.keys():
+            if rules[rule][0] == non_term:
+                to_append = (rules[rule][0], ['.'] + rules[rule][1])
+                if to_append not in node.prods:
+                    node.add_prod(to_append)
+
     # initial node
     i0 = SlrNode()
     init_prod_l = rules[0][0]
@@ -139,8 +148,18 @@ def gen_table(grammar: dict):
     i0.add_prod(init_prod)
     slr_graph.add_node(i0)
 
-
     finished = False
+    current_node = slr_graph.nodes[0]
+    # adding all prods
     while not finished:
-        pass
+        for prod in current_node.prods:
+            for i in range(len(prod[1])):
+                if prod[1][i] == '.':
+                    if i == len(prod):
+                        break
+                    if prod[1][i+1] in grammar['non_terminals']:
+                        append_prods(current_node, prod[1][i+1])
+        finished = True
+                    
 
+    print(current_node.prods)
