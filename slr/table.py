@@ -99,12 +99,20 @@ class SlrNode:
     def add_con(self, symbol: str, node: 'SlrNode'):
         self.cons.append((symbol, node))
 
+
 class SlrGraph:
     def __init__(self):
         self.nodes = []
 
     def add_node(self, node: 'SlrNode'):
         self.nodes.append(node)
+
+    def nice_print(self):
+        for i in range(len(self.nodes)):
+            print(f'Node {i}: \n')
+            for prod in self.nodes[i].prods:
+                print(prod)
+            print('\n' * 3)
 
 
 
@@ -150,8 +158,8 @@ def gen_table(grammar: dict):
 
     finished = False
     current_node = slr_graph.nodes[0]
-    # adding all prods
     while not finished:
+        # adding all prods to current node
         for prod in current_node.prods:
             for i in range(len(prod[1])):
                 if prod[1][i] == '.':
@@ -159,7 +167,30 @@ def gen_table(grammar: dict):
                         break
                     if prod[1][i+1] in grammar['non_terminals']:
                         append_prods(current_node, prod[1][i+1])
+
+        # creating new nodes (moving dots)
+        # TODO: if connection with a symble already exists on our, use same node for connection
+        # TODO: if exact prod exists in another node, connect to that one
+        for prod in current_node.prods:
+            con_symbol = ''
+            new_prod_r = prod[1]
+            for i in range(len(new_prod_r)):
+                if i == len(new_prod_r):
+                    break
+                if new_prod_r[i] == '.':
+                    new_prod_r[i] = new_prod_r[i+1]
+                    new_prod_r[i+1] = '.'
+                    con_symbol = new_prod_r[i]
+                    break
+            
+            new_node = SlrNode()
+            new_prod = (prod[0], new_prod_r)
+            new_node.add_prod(new_prod)
+            current_node.add_con(con_symbol, new_node) 
+            slr_graph.add_node(new_node)               
+
+
         finished = True
                     
 
-    print(current_node.prods)
+    slr_graph.nice_print()
