@@ -1,10 +1,10 @@
 import os
 import argparse
 
-from tools.grammar import parse_yaml, grammar_to_string, nice_grammar_print
-from tools.lexer import tokenize
-from tools.slr import run_slr
-from tools.table import gen_table
+from lexer.grammar import parse_yaml, grammar_to_string, nice_grammar_print
+from lexer.lexer import tokenize
+from slr.slr import run_slr
+from slr.table import gen_table
 
 def main(grammar_path: str, words_path: str):
     grammar = parse_yaml(grammar_path)
