@@ -113,18 +113,7 @@ class SlrGraph:
                 print(prod)
             print('\n' * 3)
 
-
-
-def gen_table(grammar: dict):
-    
-    firsts = _get_firsts(grammar)
-    follows = _get_follows(grammar)
-
-
-    print(f'Firsts -> {firsts}', end='\n'*2)
-    print(f'Follows -> {follows}', end='\n'*2)
-
-
+def make_rules_dict(grammar: dict):
     rules = {0: [grammar['initial_symbol'] + "'", [grammar['initial_symbol']]]}
 
     itr = 1
@@ -133,8 +122,19 @@ def gen_table(grammar: dict):
             rules[itr] = [symbol, production]
             itr += 1
 
+    return rules
 
-    print(f'Rules -> {rules}', end='\n'*3)
+
+def gen_table(grammar: dict):
+    
+    firsts = _get_firsts(grammar)
+    follows = _get_follows(grammar)
+    rules = make_rules_dict(grammar)
+
+
+    # print(f'Firsts -> {firsts}', end='\n'*2)
+    # print(f'Follows -> {follows}', end='\n'*2)
+    # print(f'Rules -> {rules}', end='\n'*3)
 
     slr_graph = SlrGraph()
 
@@ -149,59 +149,71 @@ def gen_table(grammar: dict):
 
     # initial node
     i0 = SlrNode()
-    init_prod_l = rules[0][0]
-    init_prod_r = ['.'] + rules[0][1]
-    init_prod = (init_prod_l, init_prod_r)
+    init_prod = (rules[0][0], ['.'] + rules[0][1])
     i0.add_prod(init_prod)
     slr_graph.add_node(i0)
 
-    finished = False
-    current_node = slr_graph.nodes[0]
-    while not finished:
+    itr = 0
+    while len(slr_graph.nodes) > itr:
+        current_node = slr_graph.nodes[itr]
         # adding all prods to current node
         for prod in current_node.prods:
             for i in range(len(prod[1])):
-                if prod[1][i] == '.':
-                    if i == len(prod):
+                if prod[1][i] == '.' and i == len(prod[1]) - 1:
                         break
-                    if prod[1][i+1] in grammar['non_terminals']:
-                        append_prods(current_node, prod[1][i+1])
-
-        # creating new nodes (moving dots)
-        # TODO: if connection with a symble already exists on our, use same node for connection
-        # TODO: if exact prod exists in another node, connect to that one
+                elif prod[1][i] == '.' and prod[1][i+1] in grammar['non_terminals']:
+                    append_prods(current_node, prod[1][i+1])
+        
 
         def check_for_existing_con(node: SlrNode, con_symbol: str):
             for symb, nd in node.cons:
                 if symb == con_symbol:
                     return nd
+            return None
+            
+        def check_for_existing_prod(prod):
+            # not sure if this works yet
+            for node in slr_graph.nodes:
+                if prod in node.prods:
+                    return node
+            return None
+        
 
         for prod in current_node.prods:
-            new_prod_r = prod[1]
+            new_prod_r = prod[1].copy()
+            production_end = False
             for i in range(len(new_prod_r)):
-                if i == len(new_prod_r):
+                if i == len(new_prod_r) - 1:
+                    production_end = True
                     break
                 if new_prod_r[i] == '.':
                     new_prod_r[i] = new_prod_r[i+1]
                     new_prod_r[i+1] = '.'
                     con_symbol = new_prod_r[i]
                     break
+        
 
-
+            if production_end:
+                continue
 
             new_prod = (prod[0], new_prod_r)
 
             nd = check_for_existing_con(current_node, con_symbol)
+            nd2 = check_for_existing_prod(new_prod)
+
             if nd:
                 # might have to check if prod already in node
                 nd.add_prod(new_prod)
+            elif nd2:
+                # not sure if it works (untested)
+                current_node.add_con(con_symbol, nd2)
             else:
                 new_node = SlrNode()
                 new_node.add_prod(new_prod)
                 current_node.add_con(con_symbol, new_node) 
                 slr_graph.add_node(new_node)
-    
 
-        finished = True
 
-    slr_graph.nice_print()
+        slr_graph.nice_print()
+        print('-' * 15)
+        itr += 1
