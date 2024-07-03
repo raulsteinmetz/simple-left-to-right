@@ -15,7 +15,7 @@ def _get_firsts(grammar: dict):
     for non_term in grammar['non_terminals']:
         firsts[non_term] = []
 
-    # rule two, eps
+    # rule two
     for non_term in grammar['productions'].keys():
         for production in grammar['productions'][non_term]:
             if production == '&':
@@ -65,7 +65,6 @@ def _get_follows(grammar: dict):
 
     changed = True
     while changed:
-        _follows = {k: v[:] for k, v in follows.items()}
         changed = False
         for non_term in grammar['productions'].keys():
             for production in grammar['productions'][non_term]:
@@ -171,6 +170,12 @@ def gen_table(grammar: dict):
         # creating new nodes (moving dots)
         # TODO: if connection with a symble already exists on our, use same node for connection
         # TODO: if exact prod exists in another node, connect to that one
+
+        def check_for_existing_con(node: SlrNode, con_symbol: str):
+            for symb, nd in node.cons:
+                if symb == con_symbol:
+                    return nd
+
         for prod in current_node.prods:
             new_prod_r = prod[1]
             for i in range(len(new_prod_r)):
@@ -182,14 +187,20 @@ def gen_table(grammar: dict):
                     con_symbol = new_prod_r[i]
                     break
 
-        
+
+
             new_prod = (prod[0], new_prod_r)
-            new_node = SlrNode()
-            new_node.add_prod(new_prod)
-            current_node.add_con(con_symbol, new_node) 
-            slr_graph.add_node(new_node)
 
-
+            nd = check_for_existing_con(current_node, con_symbol)
+            if nd:
+                # might have to check if prod already in node
+                nd.add_prod(new_prod)
+            else:
+                new_node = SlrNode()
+                new_node.add_prod(new_prod)
+                current_node.add_con(con_symbol, new_node) 
+                slr_graph.add_node(new_node)
+    
 
         finished = True
 
