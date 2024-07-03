@@ -8,14 +8,13 @@ from slr.table import gen_table
 
 def main(grammar_path: str, words_path: str):
     grammar = parse_yaml(grammar_path)
-
     nice_grammar_print(grammar)
+    gen_table(grammar)
 
-    # word = 'id + id * (id) * id'
-    # _, tokens, _ = tokenize(grammar, word)
-    # print(run_slr(grammar, tokens))
+    word = 'id + id * (id) * id'
+    _, tokens, _ = tokenize(grammar, word)
 
-    print(gen_table(grammar))
+    print(run_slr(grammar, tokens))
     
 
     

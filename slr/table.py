@@ -124,18 +124,7 @@ def make_rules_dict(grammar: dict):
 
     return rules
 
-
-def gen_table(grammar: dict):
-    
-    firsts = _get_firsts(grammar)
-    follows = _get_follows(grammar)
-    rules = make_rules_dict(grammar)
-
-
-    # print(f'Firsts -> {firsts}', end='\n'*2)
-    # print(f'Follows -> {follows}', end='\n'*2)
-    # print(f'Rules -> {rules}', end='\n'*3)
-
+def gen_graph(grammar: dict, rules: dict):
     slr_graph = SlrGraph()
 
 
@@ -172,7 +161,6 @@ def gen_table(grammar: dict):
             return None
             
         def check_for_existing_prod(prod):
-            # not sure if this works yet
             for node in slr_graph.nodes:
                 if prod in node.prods:
                     return node
@@ -202,10 +190,8 @@ def gen_table(grammar: dict):
             nd2 = check_for_existing_prod(new_prod)
 
             if nd:
-                # might have to check if prod already in node
                 nd.add_prod(new_prod)
             elif nd2:
-                # not sure if it works (untested)
                 current_node.add_con(con_symbol, nd2)
             else:
                 new_node = SlrNode()
@@ -214,6 +200,20 @@ def gen_table(grammar: dict):
                 slr_graph.add_node(new_node)
 
 
-        slr_graph.nice_print()
-        print('-' * 15)
         itr += 1
+    return slr_graph
+
+
+def gen_table(grammar: dict):
+    
+    firsts = _get_firsts(grammar)
+    follows = _get_follows(grammar)
+    rules = make_rules_dict(grammar)
+
+
+    print(f'Firsts -> {firsts}', end='\n'*2)
+    print(f'Follows -> {follows}', end='\n'*2)
+    print(f'Rules -> {rules}', end='\n'*3)
+
+    graph = gen_graph(grammar, rules)    
+    graph.nice_print()
