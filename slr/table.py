@@ -273,7 +273,7 @@ def gen_table(grammar: dict):
                 if prod_l == grammar['initial_symbol'] + "'":
                     continue
                 for symbol in follows[prod_l]:
-                    table[index][symbol] = [Action.REDUCE, rule_index]
+                    table[index][symbol] = [Action.REDUCE, rule_index] if not table[index][symbol] else table[index][symbol] # ambiguity favors stack
 
             
     # rule 3
@@ -291,5 +291,4 @@ def gen_table(grammar: dict):
     nice_table_print(table)
     print('=====================', end='\n\n')
 
-    # TODO: check for ambiguities
 
