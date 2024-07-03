@@ -126,7 +126,7 @@ def make_rules_dict(grammar: dict):
 
     return rules
 
-def gen_graph(grammar: dict, rules: dict):
+def _gen_graph(grammar: dict, rules: dict):
     slr_graph = SlrGraph()
 
 
@@ -210,20 +210,18 @@ def nice_table_print(table: dict):
 
 
 def gen_table(grammar: dict):
-    
-    firsts = _get_firsts(grammar)
+
     follows = _get_follows(grammar)
     rules = make_rules_dict(grammar)
+    graph = _gen_graph(grammar, rules)  
 
 
-    print(f'Firsts -> {firsts}', end='\n'*2)
-    print(f'Follows -> {follows}', end='\n'*2)
-    print(f'Rules -> {rules}', end='\n'*3)
-    print('=====================', end='\n\n')
-
-    graph = gen_graph(grammar, rules)    
-    graph.nice_print()
-    print('=====================', end='\n\n')
+    # print(f'Firsts -> {firsts}', end='\n'*2)
+    # print(f'Follows -> {follows}', end='\n'*2)
+    # print(f'Rules -> {rules}', end='\n'*3)
+    # print('=====================', end='\n\n')  
+    # graph.nice_print()
+    # print('=====================', end='\n\n')
 
 
     '''
@@ -288,7 +286,6 @@ def gen_table(grammar: dict):
 
 
 
-    nice_table_print(table)
-    print('=====================', end='\n\n')
+    return table
 
 

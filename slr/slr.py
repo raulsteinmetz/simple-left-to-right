@@ -1,4 +1,5 @@
 from slr.movements import Action
+from slr.table import gen_table
 
 def run_slr(grammar, tokens):
     tokens.append('$')
@@ -12,20 +13,7 @@ def run_slr(grammar, tokens):
             itr += 1
 
 
-    slr_table = {
-        0: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': [Action.NOP, 1], 'T': [Action.NOP, 2], 'F': [Action.NOP, 3]},
-        1: {'id': '', '+': [Action.STACK, 6], '*': '', '(': '', ')': '', '$': [Action.ACCEPT], 'E': '', 'T': '', 'F': ''},
-        2: {'id': '', '+': [Action.REDUCE, 2], '*': [Action.STACK, 7], '(': '', ')': [Action.REDUCE, 2], '$': [Action.REDUCE, 2], 'E': '', 'T': '', 'F': ''},
-        3: {'id': '', '+': [Action.REDUCE, 4], '*': [Action.REDUCE, 4], '(': '', ')': [Action.REDUCE, 4], '$': [Action.REDUCE, 4], 'E': '', 'T': '', 'F': ''},
-        4: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': [Action.NOP, 8], 'T': [Action.NOP, 2], 'F': [Action.NOP, 3]},
-        5: {'id': '', '+': [Action.REDUCE, 6], '*': [Action.REDUCE, 6], '(': '', ')': [Action.REDUCE, 6], '$': [Action.REDUCE, 6], 'E': '', 'T': '', 'F': ''},
-        6: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': '', 'T': [Action.NOP, 9], 'F': [Action.NOP, 3]},
-        7: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': '', 'T': '', 'F': [Action.NOP, 10]},
-        8: {'id': '', '+': [Action.STACK, 6], '*': '', '(': '', ')': [Action.STACK, 11], '$': '', 'E': '', 'T': '', 'F': ''},
-        9: {'id': '', '+': [Action.REDUCE, 1], '*': [Action.STACK, 7], '(': '', ')': [Action.REDUCE, 1], '$': [Action.REDUCE, 1], 'E': '', 'T': '', 'F': ''},
-        10: {'id': '', '+': [Action.REDUCE, 3], '*': [Action.REDUCE, 3], '(': '', ')': [Action.REDUCE, 3], '$': [Action.REDUCE, 3], 'E': '', 'T': '', 'F': ''},
-        11: {'id': '', '+': [Action.REDUCE, 5], '*': [Action.REDUCE, 5], '(': '', ')': [Action.REDUCE, 5], '$': [Action.REDUCE, 5], 'E': '', 'T': '', 'F': ''}
-    }
+    slr_table = gen_table(grammar)
 
     stack = [0]
 

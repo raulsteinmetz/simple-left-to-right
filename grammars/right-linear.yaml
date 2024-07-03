@@ -1,10 +1,17 @@
 start-symbol: S
-terminals: [a, b, c, '&']
-non-terminals: [S, A, B, C, X]
+terminals: [a, b]
+non-terminals: [S, A, B]
 productions:
-  S: [[a, A], [b, B], [c, C]]
-  A: [[X], ['&']]
-  X: [[a, A], [b, B], [c, C]]
-  B: [[a, A], [b, B], ['&']]
-  C: [[a, b, B], [b, a, A]]
+  S: [['a', 'A'], ['B']]
+  A: [['a', 'S'], ['b', 'S']]
+  B: [['b']]
+
+
+#   E: [['E', '+', 'T'], ['T']]
+#   T: [['T', '*', 'F'], ['F']]
+#   F: [['(', 'E', ')'], ['id']]
+
+
+
+
 
