@@ -1,3 +1,5 @@
+from slr.movements import Action
+
 def _get_firsts(grammar: dict):
     '''
         if x is terminal, First(x) = {x},
@@ -142,9 +144,7 @@ def gen_graph(grammar: dict, rules: dict):
     i0.add_prod(init_prod)
     slr_graph.add_node(i0)
 
-    itr = 0
-    while len(slr_graph.nodes) > itr:
-        current_node = slr_graph.nodes[itr]
+    for current_node in slr_graph.nodes:
         # adding all prods to current node
         for prod in current_node.prods:
             for i in range(len(prod[1])):
@@ -200,8 +200,13 @@ def gen_graph(grammar: dict, rules: dict):
                 slr_graph.add_node(new_node)
 
 
-        itr += 1
     return slr_graph
+
+
+def nice_table_print(table: dict):
+    for key in table.keys():
+        print(key, table[key])
+        print()
 
 
 def gen_table(grammar: dict):
@@ -214,6 +219,77 @@ def gen_table(grammar: dict):
     print(f'Firsts -> {firsts}', end='\n'*2)
     print(f'Follows -> {follows}', end='\n'*2)
     print(f'Rules -> {rules}', end='\n'*3)
+    print('=====================', end='\n\n')
 
     graph = gen_graph(grammar, rules)    
     graph.nice_print()
+    print('=====================', end='\n\n')
+
+
+    '''
+        1. if there is a production A -> [...].terminal, verify the connection for a, which node goes to
+        table[i, a] = stack connected node
+
+        2. if there is a production A -> [...]., for each a in follow of A, table[i, a] = reduce the rule A -> [...]
+
+        3. if S' -> S. is in node, table[node, $] = accept
+
+        4. if there a connection with a non_terminal in the node, table[i, non_terminal] = connected node
+    '''
+
+    # initialize the table with empty values
+
+    table = {}
+    for i in range(len(graph.nodes)):
+        table[i] = {}
+
+    for i in range(len(graph.nodes)):
+        for j in grammar['terminals'] + ['$'] + grammar['non_terminals']:
+            table[i][j] = ''
+
+
+    # rule 1 and 4
+    for node in graph.nodes:
+        index = graph.nodes.index(node)
+        for symbol, node_ in node.cons:
+            index_ = graph.nodes.index(node_)
+            if symbol in grammar['terminals']:
+                table[index][symbol] = [Action.STACK, index_]
+            else:
+                table[index][symbol] = [Action.NOP, index_]
+
+    # rule 2
+    def get_key_from_value(target_value):
+        for key, value in rules.items():
+            if value == target_value:
+                return key
+        return None
+    
+    for node in graph.nodes:
+        index = graph.nodes.index(node)
+        for prod_l, prod_r in node.prods:
+            if prod_r[-1] == '.':
+                rule_index = get_key_from_value([prod_l, prod_r[:-1]])
+                if prod_l == grammar['initial_symbol'] + "'":
+                    continue
+                for symbol in follows[prod_l]:
+                    table[index][symbol] = [Action.REDUCE, rule_index]
+
+            
+    # rule 3
+    for node in graph.nodes:
+        first_rule = (grammar['initial_symbol'] + "'", [grammar['initial_symbol'], '.'])
+        if first_rule in node.prods:
+            index = graph.nodes.index(node)
+            table[index]['$'] = [Action.ACCEPT]
+
+    
+
+
+
+
+    nice_table_print(table)
+    print('=====================', end='\n\n')
+
+    # TODO: check for ambiguities
+

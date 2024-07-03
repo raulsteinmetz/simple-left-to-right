@@ -1,4 +1,3 @@
-import os
 import argparse
 
 from lexer.grammar import parse_yaml, grammar_to_string, nice_grammar_print
@@ -15,6 +14,7 @@ def main(grammar_path: str, words_path: str):
     _, tokens, _ = tokenize(grammar, word)
 
     print(run_slr(grammar, tokens))
+
     
 
     

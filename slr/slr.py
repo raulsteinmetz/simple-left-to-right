@@ -1,7 +1,4 @@
-STACK = 's'
-REDUCE = 'r'
-NOP = 'n'
-ACCEPT = 'ac'
+from slr.movements import Action
 
 def run_slr(grammar, tokens):
     tokens.append('$')
@@ -16,18 +13,18 @@ def run_slr(grammar, tokens):
 
 
     slr_table = {
-        0: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': [NOP, 1], 'T': [NOP, 2], 'F': [NOP, 3]},
-        1: {'id': '', '+': [STACK, 6], '*': '', '(': '', ')': '', '$': [ACCEPT], 'E': '', 'T': '', 'F': ''},
-        2: {'id': '', '+': [REDUCE, 2], '*': [STACK, 7], '(': '', ')': [REDUCE, 2], '$': [REDUCE, 2], 'E': '', 'T': '', 'F': ''},
-        3: {'id': '', '+': [REDUCE, 4], '*': [REDUCE, 4], '(': '', ')': [REDUCE, 4], '$': [REDUCE, 4], 'E': '', 'T': '', 'F': ''},
-        4: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': [NOP, 8], 'T': [NOP, 2], 'F': [NOP, 3]},
-        5: {'id': '', '+': [REDUCE, 6], '*': [REDUCE, 6], '(': '', ')': [REDUCE, 6], '$': [REDUCE, 6], 'E': '', 'T': '', 'F': ''},
-        6: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': '', 'T': [NOP, 9], 'F': [NOP, 3]},
-        7: {'id': [STACK, 5], '+': '', '*': '', '(': [STACK, 4], ')': '', '$': '', 'E': '', 'T': '', 'F': [NOP, 10]},
-        8: {'id': '', '+': [STACK, 6], '*': '', '(': '', ')': [STACK, 11], '$': '', 'E': '', 'T': '', 'F': ''},
-        9: {'id': '', '+': [REDUCE, 1], '*': [STACK, 7], '(': '', ')': [REDUCE, 1], '$': [REDUCE, 1], 'E': '', 'T': '', 'F': ''},
-        10: {'id': '', '+': [REDUCE, 3], '*': [REDUCE, 3], '(': '', ')': [REDUCE, 3], '$': [REDUCE, 3], 'E': '', 'T': '', 'F': ''},
-        11: {'id': '', '+': [REDUCE, 5], '*': [REDUCE, 5], '(': '', ')': [REDUCE, 5], '$': [REDUCE, 5], 'E': '', 'T': '', 'F': ''}
+        0: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': [Action.NOP, 1], 'T': [Action.NOP, 2], 'F': [Action.NOP, 3]},
+        1: {'id': '', '+': [Action.STACK, 6], '*': '', '(': '', ')': '', '$': [Action.ACCEPT], 'E': '', 'T': '', 'F': ''},
+        2: {'id': '', '+': [Action.REDUCE, 2], '*': [Action.STACK, 7], '(': '', ')': [Action.REDUCE, 2], '$': [Action.REDUCE, 2], 'E': '', 'T': '', 'F': ''},
+        3: {'id': '', '+': [Action.REDUCE, 4], '*': [Action.REDUCE, 4], '(': '', ')': [Action.REDUCE, 4], '$': [Action.REDUCE, 4], 'E': '', 'T': '', 'F': ''},
+        4: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': [Action.NOP, 8], 'T': [Action.NOP, 2], 'F': [Action.NOP, 3]},
+        5: {'id': '', '+': [Action.REDUCE, 6], '*': [Action.REDUCE, 6], '(': '', ')': [Action.REDUCE, 6], '$': [Action.REDUCE, 6], 'E': '', 'T': '', 'F': ''},
+        6: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': '', 'T': [Action.NOP, 9], 'F': [Action.NOP, 3]},
+        7: {'id': [Action.STACK, 5], '+': '', '*': '', '(': [Action.STACK, 4], ')': '', '$': '', 'E': '', 'T': '', 'F': [Action.NOP, 10]},
+        8: {'id': '', '+': [Action.STACK, 6], '*': '', '(': '', ')': [Action.STACK, 11], '$': '', 'E': '', 'T': '', 'F': ''},
+        9: {'id': '', '+': [Action.REDUCE, 1], '*': [Action.STACK, 7], '(': '', ')': [Action.REDUCE, 1], '$': [Action.REDUCE, 1], 'E': '', 'T': '', 'F': ''},
+        10: {'id': '', '+': [Action.REDUCE, 3], '*': [Action.REDUCE, 3], '(': '', ')': [Action.REDUCE, 3], '$': [Action.REDUCE, 3], 'E': '', 'T': '', 'F': ''},
+        11: {'id': '', '+': [Action.REDUCE, 5], '*': [Action.REDUCE, 5], '(': '', ')': [Action.REDUCE, 5], '$': [Action.REDUCE, 5], 'E': '', 'T': '', 'F': ''}
     }
 
     stack = [0]
@@ -42,12 +39,12 @@ def run_slr(grammar, tokens):
             stack.append(str(slr_table[int(stack[-2])][stack[-1]][1]))
             continue
 
-        if op[0] == STACK:
+        if op[0] == Action.STACK:
             stack.append(tokens[0])
             stack.append(str(op[1]))
             tokens = tokens[1:]
         
-        elif op[0] == REDUCE:
+        elif op[0] == Action.REDUCE:
             left, right = rules[op[1]]
             rstack = list(reversed(stack))
             right = list(reversed(right))
@@ -67,7 +64,7 @@ def run_slr(grammar, tokens):
             stack.append(left)
 
 
-        elif op[0] == ACCEPT:
+        elif op[0] == Action.ACCEPT:
             accepted = True
 
     return True
