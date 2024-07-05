@@ -1,0 +1,8 @@
+start-symbol: S
+terminals: [a, b, c, d]
+non-terminals: [S, A, B, C]
+productions:
+  S: [['a', 'A']]
+  A: [['b', 'B'], ['a']]
+  B: [['c', 'C'], ['b']]
+  C: [['d', 'S'], ['c']]

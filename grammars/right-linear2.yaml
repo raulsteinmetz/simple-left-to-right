@@ -4,13 +4,3 @@ non-terminals: [S, A]
 productions:
   S: [['a', 'A'], ['a']]
   A: [['b', 'S']]
-
-
-# start-symbol: S
-# terminals: [a, b]
-# non-terminals: [S, A, B]
-# productions:
-  # S: [['a', 'A'], ['B']]
-  # A: [['a', 'S'], ['b', 'S']]
-  # B: [['b']]
-# 
