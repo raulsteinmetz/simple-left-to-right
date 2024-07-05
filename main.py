@@ -29,12 +29,18 @@ def main(grammar_path: str, words_path: str):
         grammar_dict = ast.literal_eval(grammar)
 
 
-
     nice_grammar_print(grammar_dict)
 
-    word = str(input('Word: '))
-    _, tokens, _ = tokenize_word(grammar_dict, word)
-    print(run_slr(grammar_dict, tokens))
+    word = 'dummy'
+    while word:
+        word = str(input('Type your Word or press enter to leave: '))
+        if not word:
+            continue
+        _, tokens, _ = tokenize_word(grammar_dict, word)
+        if run_slr(grammar_dict, tokens):
+            print('Word Recognized by your grammar.')
+        else:
+            print('Word not recognized by your grammar.')
 
     
 
