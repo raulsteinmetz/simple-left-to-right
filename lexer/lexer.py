@@ -56,7 +56,10 @@ def tokenize_grammar(grammar: str):
             i += 1
         else:
             j = i
-            while j < len(grammar) and not grammar[j].isupper() and grammar[j] not in reserved_symbs and not any(grammar.startswith(word, j) for word in reserved_words):
+            while j < len(grammar) and not grammar[j].isupper() \
+                and grammar[j] not in reserved_symbs \
+                and not any(grammar.startswith(word, j) \
+                for word in reserved_words):
                 j += 1
             tokens.append('term')
             i = j
