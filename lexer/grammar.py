@@ -22,7 +22,6 @@ def grammar_to_string(grammar: dict):
 
 
 def nice_grammar_print(grammar: dict):
-    print('\n' * 3)
     print("====== Grammar ======")
     print("\nInitial Symbol:")
     print(f"  {grammar['initial_symbol']}")
