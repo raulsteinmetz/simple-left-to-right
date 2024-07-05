@@ -1,6 +1,10 @@
 import yaml
 import json
 
+def read_txt(fpath: str) -> str:
+    with open(fpath, 'r', encoding='utf-8') as file:
+        return file.read()
+
 
 def parse_yaml(fpath: str):
     with open(fpath, 'r') as file:

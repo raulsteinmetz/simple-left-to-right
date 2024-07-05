@@ -1,0 +1,1 @@
+{'initial_symbol': 'S', 'terminals': ['a', 'b'], 'non_terminals': ['S', 'A', 'B'], 'productions': {'S': [['a', 'A'], ['B']], 'A': [['a', 'S'], ['b', 'S']], 'B': [['b']]}}

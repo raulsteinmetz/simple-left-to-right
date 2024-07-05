@@ -1,6 +1,4 @@
-3. construção da tabela slr
 4. nossa gramatica
-
 5. limpar e refatorar codigo (opcional)
 
 
@@ -16,3 +14,4 @@ S -> caps A          --> Reconhece um simbolo não terminal
 A -> txt A | B       --> Reconhece cadeia de terminais de uma produção
 B -> caps A | C      --> Reconhece outra produção ou termina uma produção         
 C -> S | null        --> Reconhece um novo não terminal ou acaba o gramática
+
