@@ -18,20 +18,23 @@ def main(grammar_path: str, words_path: str):
 
         # verify if its a right linear grammar
         grammar_tokens = tokenize_grammar(grammar)
-        print(grammar_tokens)
-        print(run_slr(grammar_recognizer, grammar_tokens))
-        exit()
-
+        
+        # recognize grammar structure
+        if not run_slr(grammar_recognizer, grammar_tokens):
+            print('Grammar not recognized as a right-linear grammar')
+            exit()
+        
+        print('Grammar is a correctly defined right-linear grammar.')
         # turn into dictionary for evaluating words
         grammar_dict = ast.literal_eval(grammar)
+
 
 
     nice_grammar_print(grammar_dict)
 
     word = str(input('Word: '))
-    _, tokens, _ = tokenize_word(grammar, word)
-
-    print(run_slr(grammar, tokens))
+    _, tokens, _ = tokenize_word(grammar_dict, word)
+    print(run_slr(grammar_dict, tokens))
 
     
 
