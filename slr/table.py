@@ -213,15 +213,7 @@ def gen_table(grammar: dict):
 
     follows = _get_follows(grammar)
     rules = make_rules_dict(grammar)
-    graph = _gen_graph(grammar, rules)  
-
-
-    # print(f'Firsts -> {firsts}', end='\n'*2)
-    # print(f'Follows -> {follows}', end='\n'*2)
-    # print(f'Rules -> {rules}', end='\n'*3)
-    # print('=====================', end='\n\n')  
-    # graph.nice_print()
-    # print('=====================', end='\n\n')
+    graph = _gen_graph(grammar, rules)
 
 
     '''
