@@ -8,20 +8,25 @@ from slr.table import gen_table
 
 def main(grammar_path: str, words_path: str):
 
+    # our grammar
+    grammar_recognizer = parse_yaml('./grammars/gld.yaml')
+
     if grammar_path.endswith('.yaml'):
-        grammar = parse_yaml(grammar_path)
+        grammar_dict = parse_yaml(grammar_path)
     else: # its a txt
         grammar = read_txt(grammar_path)
 
         # verify if its a right linear grammar
-        grammar = tokenize_grammar(grammar)
+        grammar_tokens = tokenize_grammar(grammar)
+        print(grammar_tokens)
+        print(run_slr(grammar_recognizer, grammar_tokens))
         exit()
 
         # turn into dictionary for evaluating words
-        grammar = ast.literal_eval(grammar)
+        grammar_dict = ast.literal_eval(grammar)
 
-    nice_grammar_print(grammar)
-    gen_table(grammar)
+
+    nice_grammar_print(grammar_dict)
 
     word = str(input('Word: '))
     _, tokens, _ = tokenize_word(grammar, word)

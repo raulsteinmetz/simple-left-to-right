@@ -1,5 +1,5 @@
 from slr.movements import Action
-from slr.table import gen_table
+from slr.table import gen_table, nice_table_print
 
 def run_slr(grammar, tokens):
     tokens.append('$')
@@ -14,6 +14,7 @@ def run_slr(grammar, tokens):
 
 
     slr_table = gen_table(grammar)
+
 
     stack = [0]
 

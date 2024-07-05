@@ -1,0 +1,33 @@
+
+start-symbol: S
+terminals: [
+  '{', '}', '[', ']', ':', "'", ',',
+  'term', 'non_term', 'initial_symbol',
+  'terminals', 'non_terminals', 'productions']
+non-terminals: [S, T, U, M, V, W, P, Q, B, A]
+
+productions:
+  S: [['{', "'", 'initial_symbol', "'", ':', "'", 'non_term', "'", ',', 'T']]
+  T: [["'", 'terminals', "'", ':', '[', "'", 'term', "'", 'U']]
+  U: [[',', "'", 'term', "'", 'U'], [",", "'", 'term', "'", 'M']]
+  M: [[']', ',', "'", 'non_terminals', "'", ':', '[', "'", 'non_term', "'", 'V']] 
+  V: [[',', "'", "non_term", "'", 'V'], ['W']]
+  W: [[']', ',', "'", 'productions', "'", ':', '{', 'P']]
+  P: [["'", 'non_term', "'", ':', '[', '[', 'Q']]
+  Q: [["'", 'term', "'", 'A'], ["'", 'non_term', "'", ']', 'B']]
+  A: [[',', 'Q'], [']', 'B']]
+  B: [[',', '[', 'Q'], [']', ',', P], [']', '}', '}']]
+
+
+
+
+# start-symbol: E
+# terminals: [id, +, '*', (, )]
+# non-terminals: [E, T, F]
+# productions:
+#   E: [['E', '+', 'T'], ['T']]
+#   T: [['T', '*', 'F'], ['F']]
+#   F: [['(', 'E', ')'], ['id']]
+
+
+# # & means epsilon

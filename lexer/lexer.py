@@ -39,8 +39,6 @@ def tokenize_grammar(grammar: str):
     reserved_words = ['initial_symbol', 'terminals', 'non_terminals', 'productions']
     reserved_symbs = ['{', '}', "'", ':', ',', '[', ']']
     
-    print(grammar)
-    print()
 
     i = 0
     while i < len(grammar):
@@ -54,13 +52,13 @@ def tokenize_grammar(grammar: str):
                     i += len(word)
                     break
         elif grammar[i].isupper():
-            tokens.append('NON_TERM')
+            tokens.append('non_term')
             i += 1
         else:
             j = i
             while j < len(grammar) and not grammar[j].isupper() and grammar[j] not in reserved_symbs and not any(grammar.startswith(word, j) for word in reserved_words):
                 j += 1
-            tokens.append('TERM')
+            tokens.append('term')
             i = j
 
-    print(tokens)
+    return tokens
