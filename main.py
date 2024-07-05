@@ -4,7 +4,6 @@ import ast
 from lexer.grammar import read_txt, parse_yaml, nice_grammar_print
 from lexer.lexer import tokenize_grammar, tokenize_word
 from slr.slr import run_slr
-from slr.table import gen_table
 
 def main(grammar_path: str, words_path: str):
 
