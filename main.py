@@ -7,19 +7,17 @@ from slr.slr import run_slr
 
 def main(grammar_path: str, words_path: str):
 
-    # our grammar
+    # creates dictionary for right linear grammar recognizer grammar
     grammar_recognizer = parse_yaml('./grammars/gld.yaml')
 
+    # grammars can either be on txt or yaml
     if grammar_path.endswith('.yaml'):
         grammar_dict = parse_yaml(grammar_path)
-        print(grammar_dict)
-        exit()
-    else: # its a txt
+    elif grammar_path.endswith('.txt'):
         grammar = read_txt(grammar_path)
-
+        
         # verify if its a right linear grammar
         grammar_tokens = tokenize_grammar(grammar)
-        
         # recognize grammar structure
         if not run_slr(grammar_recognizer, grammar_tokens):
             print('Grammar not recognized as a right-linear grammar')
