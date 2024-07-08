@@ -1,5 +1,5 @@
 start-symbol: S
-terminals: [a, b]
+terminals: [a, b, '&']
 non-terminals: [S, R]
 productions:
   S: [['a', 'R'], ['&']]
