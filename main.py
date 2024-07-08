@@ -12,6 +12,8 @@ def main(grammar_path: str, words_path: str):
 
     if grammar_path.endswith('.yaml'):
         grammar_dict = parse_yaml(grammar_path)
+        print(grammar_dict)
+        exit()
     else: # its a txt
         grammar = read_txt(grammar_path)
 
