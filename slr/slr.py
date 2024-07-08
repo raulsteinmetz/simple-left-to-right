@@ -1,5 +1,5 @@
 from slr.movements import Action
-from slr.table import gen_table
+from slr.table import gen_table, nice_table_print
 
 def run_slr(grammar, tokens):
     tokens.append('$')
@@ -37,6 +37,9 @@ def run_slr(grammar, tokens):
             left, right = rules[op[1]]
             rstack = list(reversed(stack))
             right = list(reversed(right))
+            if right == ['&']:
+                stack.append(left)
+                continue
             itr = 0
             cut = 0
             for i in range(len(right)):

@@ -11,6 +11,8 @@ def _get_firsts(grammar: dict):
 
     # rule 1, terminals
     for term in grammar['terminals']:
+        if term == '&':
+            continue
         firsts[term] = [term]
 
     # init on non_terminals first
@@ -132,9 +134,12 @@ def _gen_graph(grammar: dict, rules: dict):
 
     def append_prods(node: SlrNode, non_term: str):
         # adds productions of a non terminal to a node in the graph
-        for rule in rules.keys():
+        for rule in rules.keys(): 
             if rules[rule][0] == non_term:
-                to_append = (rules[rule][0], ['.'] + rules[rule][1])
+                if rules[rule][1] == ['&']:
+                    to_append = (rules[rule][0], ['&', '.'])
+                else:
+                    to_append = (rules[rule][0], ['.'] + rules[rule][1])
                 if to_append not in node.prods:
                     node.add_prod(to_append)
 
@@ -215,7 +220,6 @@ def gen_table(grammar: dict):
     rules = make_rules_dict(grammar)
     graph = _gen_graph(grammar, rules)
 
-
     '''
         1. if there is a production A -> [...].terminal, verify the connection for a, which node goes to
         table[i, a] = stack connected node
@@ -235,6 +239,8 @@ def gen_table(grammar: dict):
 
     for i in range(len(graph.nodes)):
         for j in grammar['terminals'] + ['$'] + grammar['non_terminals']:
+            if j == '&':
+                continue
             table[i][j] = ''
 
 
@@ -272,11 +278,6 @@ def gen_table(grammar: dict):
         if first_rule in node.prods:
             index = graph.nodes.index(node)
             table[index]['$'] = [Action.ACCEPT]
-
-    
-
-
-
 
     return table
 
