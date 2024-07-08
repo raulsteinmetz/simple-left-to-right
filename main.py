@@ -33,10 +33,8 @@ def main(grammar_path: str, words_path: str):
     nice_grammar_print(grammar_dict)
 
     word = 'dummy'
-    while word:
-        word = str(input('Type your Word or press enter to leave: '))
-        if not word:
-            continue
+    while word != 'leave':
+        word = str(input('Type your Word or "leave" enter to leave: '))
         _, tokens, _ = tokenize_word(grammar_dict, word)
         if run_slr(grammar_dict, tokens):
             print('Word Recognized by your grammar.')
