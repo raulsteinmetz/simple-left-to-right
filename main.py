@@ -51,7 +51,7 @@ def main(grammar_path: str, checkrl: bool):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Recognize a grammar and test words on it')
     parser.add_argument('--grammar', type=str, default='./grammars/ops.yaml', help='Path to your grammar definition')
-    parser.add_argument('--checkrl', type=bool, default=True, help='Check if grammar is right-linear')
+    parser.add_argument('--checkrl', type=bool, default=False, help='Check if grammar is right-linear')
     args = parser.parse_args()
     
     main(args.grammar, args.checkrl)
