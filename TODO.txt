@@ -1,5 +1,1 @@
-consider empty productions
-
-comment code
-
-readme
+print word generation path
