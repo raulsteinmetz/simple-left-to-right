@@ -285,5 +285,3 @@ def gen_table(grammar: dict):
             table[index]['$'] = [Action.ACCEPT]
 
     return table
-
-

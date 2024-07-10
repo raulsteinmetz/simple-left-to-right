@@ -13,17 +13,20 @@ def run_slr(grammar, tokens):
 
     tokens.append('$')
     stack = [0]
+    derivations = []
 
     accepted = False
     while not accepted:
         try:
             op = slr_table[int(stack[-1])][tokens[0]]
             if op == '':
+                print(f'Error: No operation found for {stack[-1]} and {tokens[0]}')
                 return False
         except: # nop will not be found with (stack[-1], token), but with (stack[-2], stack[-1])
             try:
                 stack.append(str(slr_table[int(stack[-2])][stack[-1]][1]))
             except:
+                print(f'Error: No operation found for {stack[-2]} and {stack[-1]}')
                 return False
             continue
 
@@ -53,9 +56,12 @@ def run_slr(grammar, tokens):
             
             stack = stack[:cut]
             stack.append(left)
-
+            derivations.append(f'{left} -> {"".join(reversed(right))}')
 
         elif op[0] == Action.ACCEPT:
             accepted = True
-
+        
+    for i in reversed(range(len(derivations))):
+        print(derivations[i])
+        
     return True
