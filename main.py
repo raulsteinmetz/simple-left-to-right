@@ -8,7 +8,7 @@ from slr.slr import run_slr
 def main(grammar_path: str, checkrl: bool):
 
     # creates dictionary for right linear grammar recognizer grammar
-    grammar_recognizer = parse_yaml('./grammars/gld.yaml')
+    grammar_recognizer = parse_yaml('./grammars/rl.yaml')
 
     grammar = ''
     # grammars can either be on txt or yaml
