@@ -1,21 +1,17 @@
 from slr.movements import Action
-from slr.table import gen_table, nice_table_print
+from slr.table import gen_table, make_rules_dict
 
 def run_slr(grammar, tokens):
-    tokens.append('$')
-
     rules = {}
 
-    itr = 1
-    for symbol in grammar['productions']:
-        for production in grammar['productions'][symbol]:
-            rules[itr] = [symbol, production]
-            itr += 1
+    # creates the numerated set of rules (used for reduction)
+    rules = make_rules_dict(grammar)
 
 
+    # generates table
     slr_table = gen_table(grammar)
 
-
+    tokens.append('$')
     stack = [0]
 
     accepted = False
@@ -24,8 +20,11 @@ def run_slr(grammar, tokens):
             op = slr_table[int(stack[-1])][tokens[0]]
             if op == '':
                 return False
-        except: # nop
-            stack.append(str(slr_table[int(stack[-2])][stack[-1]][1]))
+        except: # nop will not be found with (stack[-1], token), but with (stack[-2], stack[-1])
+            try:
+                stack.append(str(slr_table[int(stack[-2])][stack[-1]][1]))
+            except:
+                return False
             continue
 
         if op[0] == Action.STACK:

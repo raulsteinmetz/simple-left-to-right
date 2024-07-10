@@ -34,7 +34,7 @@ def _get_firsts(grammar: dict):
             for production in grammar['productions'][non_term]:
                 if production == '&':
                     continue
-                for symbol in production:
+                for symbol in production: # symbol is the first of the production, then it breaks
                     if symbol in grammar['terminals']:
                         if symbol not in firsts[non_term]:
                             firsts[non_term].append(symbol)
@@ -45,46 +45,51 @@ def _get_firsts(grammar: dict):
                             if sym_first not in firsts[non_term]:
                                 firsts[non_term].append(sym_first)
                                 changed = True
-                        if '&' not in firsts[symbol]:
-                            break
+                        break
                     else:
                         break
-                else:
-                    if '&' not in firsts[non_term]:
-                        firsts[non_term].append('&')
-                        changed = True
-
     return firsts
 
 def _get_follows(grammar: dict):
     '''
         $ in follow(S) if S is the initial symbol,
-        if A -> [..]XB, First(B) in Follow(X) - b being terminal or not,
+        if A -> [..]XB, First(B) in Follow(X) - B being terminal or not,
         if A -> [...]X or A -> [...]XB and B -> eps, Follow(A) in Follow(X) 
+    '''
+
+    '''
+        we create the follows by:
+            reversed iteration in the right side of each production
+            we keep track of the possible follow by:
+                initiating it with follow of left side (in case of rule 3)
+                reseting it into the firsts of a non terminal if we find a non terminal - rule 2
+                reseting it in case we find a terminal (to the terminal itself) - rule 2
+            everytime we fid a non terminal, we add the possible follow to the follow of this non terminal
     '''
 
     firsts = _get_firsts(grammar)
     follows = {non_term: [] for non_term in grammar['non_terminals']}
-    follows[grammar['initial_symbol']].append('$')
+    follows[grammar['initial_symbol']].append('$') # rule 1
 
     changed = True
     while changed:
         changed = False
         for non_term in grammar['productions'].keys():
             for production in grammar['productions'][non_term]:
-                follow_temp = follows[non_term][:]
+                follow_temp = follows[non_term][:] # rule 3
                 for i in range(len(production) - 1, -1, -1):
                     symbol = production[i]
-                    if symbol in grammar['non_terminals']:
+                    if symbol in grammar['non_terminals']: # rule 2
                         for follow in follow_temp:
                             if follow not in follows[symbol]:
                                 follows[symbol].append(follow)
                                 changed = True
-                        if '&' in firsts[symbol]:
+                        if '&' in firsts[symbol]: # rule 3
                             follow_temp.extend(first for first in firsts[symbol] if first != '&')
-                        else:
+                        else: # rule 2
                             follow_temp = firsts[symbol][:]
-                    elif symbol in grammar['terminals']:
+                    elif symbol in grammar['terminals']: # rule 2
+                        # reset follow_temp when encountering a terminal
                         follow_temp = [symbol]
 
     return follows

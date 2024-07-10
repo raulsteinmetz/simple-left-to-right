@@ -1,12 +1,12 @@
 import yaml
 import json
 
-def read_txt(fpath: str) -> str:
+def read_txt(fpath: str) -> str: # reads txt, returns string
     with open(fpath, 'r', encoding='utf-8') as file:
         return file.read()
 
 
-def parse_yaml(fpath: str):
+def parse_yaml(fpath: str): # creates grammar dictionary from yaml definition
     with open(fpath, 'r') as file:
         data = yaml.safe_load(file)
     return {
@@ -17,7 +17,7 @@ def parse_yaml(fpath: str):
     }
 
 
-def grammar_to_string(grammar: dict):
+def grammar_to_string(grammar: dict): # turns dictionary into a string, exactly as the dict would be printed
     return json.dumps(grammar, separators=(',', ': '))
 
 

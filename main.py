@@ -38,7 +38,7 @@ def main(grammar_path: str, checkrl: bool):
 
     word = 'dummy'
     while word != 'leave':
-        word = str(input('Type your Word or "leave" enter to leave: '))
+        word = str(input('Type your Word or "leave" to leave: '))
         _, tokens, _ = tokenize_word(grammar_dict, word)
         if run_slr(grammar_dict, tokens):
             print('Word Recognized by your grammar.')
