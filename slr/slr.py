@@ -1,7 +1,7 @@
 from slr.movements import Action
 from slr.table import gen_table, make_rules_dict
 
-def run_slr(grammar, tokens):
+def run_slr(grammar, tokens, print_derivation=False):
     rules = {}
 
     # creates the numerated set of rules (used for reduction)
@@ -56,12 +56,21 @@ def run_slr(grammar, tokens):
             
             stack = stack[:cut]
             stack.append(left)
-            derivations.append(f'{left} -> {"".join(reversed(right))}')
+            derivations.append((left, list(reversed(right))))
 
         elif op[0] == Action.ACCEPT:
             accepted = True
         
-    for i in reversed(range(len(derivations))):
-        print(derivations[i])
-        
+    if print_derivation:
+        print("".join(derivations[-1][0]) + ' -> ' + "".join(derivations[-1][1]))
+        current_derivation = derivations[-1][1]
+        for i in reversed(range(len(derivations) - 1)):
+            print('Rule used: ' + "".join(derivations[i][0]) + "->" + "".join(derivations[i][1]))
+            print("".join(current_derivation), end=' ')
+            if str(current_derivation[-1]).isupper():
+                current_derivation = current_derivation[:-1]
+                current_derivation += derivations[i][1]
+
+            print('-> ' + "".join(current_derivation))
+
     return True

@@ -40,7 +40,7 @@ def main(grammar_path: str, checkrl: bool):
     while word != 'leave':
         word = str(input('Type your Word or "leave" to leave: '))
         _, tokens, _ = tokenize_word(grammar_dict, word)
-        if run_slr(grammar_dict, tokens):
+        if run_slr(grammar_dict, tokens, print_derivation=True):
             print('Word Recognized by your grammar.')
         else:
             print('Word not recognized by your grammar.')
