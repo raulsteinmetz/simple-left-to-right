@@ -7,7 +7,7 @@ def tokenize_word(grammar: dict, word: str):
     tokens = []
     token = ''
     longest_match = ''
-    while word: # only one iteration over the world
+    while word: # only one iteration over the word
         token += word[0]
         word = word[1:]
 

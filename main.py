@@ -7,7 +7,7 @@ from slr.slr import run_slr
 
 def main(grammar_path: str, checkrl: bool):
 
-    # creates dictionary for right linear grammar recognizer grammar
+    # creates dictionary for right linear grammar recognizer
     grammar_recognizer = parse_yaml('./grammars/rl.yaml')
 
     grammar = ''
@@ -21,14 +21,18 @@ def main(grammar_path: str, checkrl: bool):
     else:
         print('File format for Grammar definition not supported')
         
+
+    verbose = False
+
     if checkrl:
         # verify if its a right linear grammar
         grammar_tokens = tokenize_grammar(grammar)
         # recognize grammar structure
-        if not run_slr(grammar_recognizer, grammar_tokens):
+        if not run_slr(grammar_recognizer, grammar_tokens, print_derivation=False):
             print('Grammar not recognized as a right-linear grammar')
-            exit()
-        print('Grammar is a correctly defined right-linear grammar.')
+        else:
+            print('Grammar is a correctly defined right-linear grammar.')
+            verbose = True
 
     # turn into dictionary for evaluating words
     grammar_dict = ast.literal_eval(grammar)
@@ -36,14 +40,17 @@ def main(grammar_path: str, checkrl: bool):
 
     nice_grammar_print(grammar_dict)
 
-    word = 'dummy'
-    while word != 'leave':
+    while True:
         word = str(input('Type your Word or "leave" to leave: '))
+        if word == 'leave':
+            break
         _, tokens, _ = tokenize_word(grammar_dict, word)
-        if run_slr(grammar_dict, tokens, print_derivation=True):
+        if run_slr(grammar_dict, tokens, print_derivation=verbose):
             print('Word Recognized by your grammar.')
         else:
             print('Word not recognized by your grammar.')
+        
+        print('\n\n')
 
     
 

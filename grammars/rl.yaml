@@ -9,7 +9,7 @@ non-terminals: [S, T, U, M, V, W, P, Q, B, A]
 productions:
   S: [['{', "'", 'initial_symbol', "'", ':', "'", 'non_term', "'", ',', 'T']]
   T: [["'", 'terminals', "'", ':', '[', "'", 'term', "'", 'U']]
-  U: [[',', "'", 'term', "'", 'U'], [",", "'", 'term', "'", 'M']]
+  U: [[',', "'", 'term', "'", 'U'], ['M']]
   M: [[']', ',', "'", 'non_terminals', "'", ':', '[', "'", 'non_term', "'", 'V']] 
   V: [[',', "'", "non_term", "'", 'V'], ['W']]
   W: [[']', ',', "'", 'productions', "'", ':', '{', 'P']]

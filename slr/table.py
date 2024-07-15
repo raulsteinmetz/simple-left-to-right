@@ -79,16 +79,16 @@ def _get_follows(grammar: dict):
                 follow_temp = follows[non_term][:] # rule 3
                 for i in range(len(production) - 1, -1, -1):
                     symbol = production[i]
-                    if symbol in grammar['non_terminals']: # rule 2
+                    if symbol in grammar['non_terminals']: # rule 2, 3
                         for follow in follow_temp:
                             if follow not in follows[symbol]:
                                 follows[symbol].append(follow)
                                 changed = True
-                        if '&' in firsts[symbol]: # rule 3
+                        if '&' in firsts[symbol]:
                             follow_temp.extend(first for first in firsts[symbol] if first != '&')
-                        else: # rule 2
+                        else:
                             follow_temp = firsts[symbol][:]
-                    elif symbol in grammar['terminals']: # rule 2
+                    elif symbol in grammar['terminals']:
                         # reset follow_temp when encountering a terminal
                         follow_temp = [symbol]
 
